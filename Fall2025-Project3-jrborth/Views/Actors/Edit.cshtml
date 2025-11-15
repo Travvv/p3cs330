@@ -1,0 +1,64 @@
+﻿@using System
+@model Fall2025_Project3_jrborth.Models.Actor
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Actor</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label"></label>
+                <input asp-for="Gender" class="form-control" />
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Age" class="control-label"></label>
+                <input asp-for="Age" class="form-control" />
+                <span asp-validation-for="Age" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImdbLink" class="control-label"></label>
+                <input asp-for="ImdbLink" class="form-control" />
+                <span asp-validation-for="ImdbLink" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Photo</label>
+                @if (Model?.Photo != null && Model.Photo.Length > 0)
+                {
+                    var base64 = Convert.ToBase64String(Model.Photo);
+                    <div class="mb-2">
+                        <img src="data:image/jpeg;base64,@base64" style="max-height:200px; max-width:200px;" alt="Photo" />
+                    </div>
+                }
+                <input name="photoFile" type="file" class="form-control" />
+                <span asp-validation-for="Photo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

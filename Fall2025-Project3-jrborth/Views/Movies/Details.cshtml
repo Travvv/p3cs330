@@ -1,0 +1,105 @@
+﻿@model Fall2025_Project3_jrborth.Models.MovieDetailsViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Movie</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Movie.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Movie.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Movie.Genre)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Movie.Genre)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Movie.Year)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Movie.Year)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Movie.ImdbLink)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Movie.ImdbLink)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Movie.Poster)
+        </dt>
+        <dd class = "col-sm-10">
+            @if (Model?.Movie?.Poster != null && Model.Movie.Poster.Length > 0)
+            {
+                var base64 = Convert.ToBase64String(Model.Movie.Poster);
+                <img src="data:image/jpeg;base64,@base64" style="max-width:400px; max-height:400px;" alt="Poster" />
+            }
+            else
+            {
+                <span>No image</span>
+            }
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Movie?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<hr />
+
+<section>
+    <h4>Actors in this movie</h4>
+    @if (Model?.Actors != null && Model.Actors.Any())
+    {
+        <ul>
+            @foreach (var a in Model.Actors)
+            {
+                <li>@a.Name</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No actors recorded for this movie.</p>
+    }
+</section>
+
+<section>
+    <h3>Average sentiment for this movie: @Model.AverageSentiment.ToString("F3")</h3>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>AI Generated Review</th>
+                <th>Vader Compound Sentiment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model?.Reviews != null && Model.Reviews.Any())
+            {
+                for (int i = 0; i < Model.Reviews.Count; i++)
+                {
+                    <tr>
+                        <td>@Model.Reviews[i]</td>
+                        <td>@(i < Model.Sentiments.Count ? Model.Sentiments[i] : "n/a")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr><td colspan="2">No reviews available.</td></tr>
+            }
+        </tbody>
+    </table>
+</section>
