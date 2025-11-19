@@ -8,15 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Read the connection string with placeholder from configuration
 var defaultConn = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
 
-// Read the password from user secrets (or other configuration providers)
-var secretPassword = builder.Configuration["DbPassword"];
-
-// Replace the placeholder "{your_password}" with the secret if available
-if (!string.IsNullOrEmpty(secretPassword) && defaultConn.Contains("{your_password}"))
-{
-    defaultConn = defaultConn.Replace("{your_password}", secretPassword);
-}
-
 // Example: register a DbContext using the constructed connection string
 // Replace `ApplicationDbContext` with your actual DbContext type.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -32,6 +23,12 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<IAzureOpenAIService, AzureOpenAIService>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
